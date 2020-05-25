@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>造作啊 MD</title>
+    <style>
+        .body_div {
+            margin: 100px auto;
+            width: 60%;
+        }
+
+        .key_div {
+            width: 30%;
+        }
+
+        .text_div {
+            width: 40%
+        }
+
+        .body_div > div {
+            float: left;
+        }
+
+        .key_common_css {
+            width: 130px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            margin-top: 10px;
+            transition: all 0.5s;
+            cursor: pointer;
+        }
+
+        .key_model_common_css {
+            width: 95%;
+            height: 200pt;
+            text-align: center;
+            line-height: 200pt;
+            margin: 15px auto;
+            transition: all 0.5s;
+            cursor: pointer;
+            font-size: 45pt;
+        }
+
+        .key_common_css:hover, key_model_common_css:hover {
+            background: #AEDD81;
+        }
+
+        .close_key {
+            background: #D0D0D0;
+        }
+
+        .open_key {
+            background: #00CCFF;
+        }
+
+        .test_text {
+            width: 90%;
+            height: 350px;
+        }
+
+        .time_input_css {
+            width: 50px;
+            height: 27px;
+            border-radius: 5px;
+            border: 1px solid #b6dcb5;
+        }
+
+        .time_model_input_css {
+            width: 120pt;
+            height: 50pt;
+            border: none;
+            font-size: 45pt;
+            outline: none;
+        }
+
+        .model_input_span {
+            border: 1px solid #b6dcb5;
+            padding-bottom: 4pt;
+            margin-right: 25pt;
+            border-radius: 15pt;
+            line-height: 50pt;
+        }
+
+        .shutdown_div {
+            width: 99%;
+            height: 50px;
+            margin: 10px auto;
+            text-align: center;
+            line-height: 50px;
+            transition: all 1s;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .shutdown_div:hover {
+            background: #ff0703;
+        }
+
+        .log_div {
+            width: 29%;
+            border-bottom: 1px solid #fff;
+            height: 350px;
+            padding-right: 10px;
+            overflow: auto;
+        }
+
+        .alert_type_2 {
+            color: #ff0703;
+            display: block;
+        }
+
+        .alert_type_1 {
+            color: #3dbd18;
+            display: block;
+        }
+
+        .alert_type_3 {
+            color: #fff91e;
+            display: block;
+        }
+
+        #window_client {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        #model_client {
+            width: 100%;
+            height: 100%;
+            display: none;
+            text-align: center;
+        }
+
+        .erweima_class {
+            margin: 10px auto;
+            width: 100px;
+            text-align: center;
+        }
+
+        .erweima_parent_div {
+            display: none;
+        }
+
+        .reflash_token_button {
+            display: block;
+            margin: 5px auto;
+            width: 100px;
+            height: 30px;
+            border: 1px solid #b6dcb5;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="model_client">
+    <div class="key_model_common_css close_key q" onclick="key_click_fun(this,'Q')">自动 Q</div>
+    <div class="key_model_common_css close_key w" onclick="key_click_fun(this,'W')">自动 W</div>
+    <div class="key_model_common_css close_key e" onclick="key_click_fun(this,'E')">自动 E</div>
+    <div class="key_model_common_css close_key r" onclick="key_click_fun(this,'R')">自动 R</div>
+    <div class="key_model_common_css">
+        间隔：<span class="model_input_span">
+            <input type="text" class="time time_model_input_css"
+                   onchange="time_change(this)"
+                   oninput="value=value.replace(/[^\d]/g,'')"/></span> &nbsp;ms
+    </div>
+    <div class="key_model_common_css close_key" onclick="shutdown()">停止运行</div>
+</div>
+<div id="window_client">
+    <div class="body_div">
+        <div class="key_div">
+            <div class="key_common_css close_key q" onclick="key_click_fun(this,'Q')">自动 Q</div>
+            <div class="key_common_css close_key w" onclick="key_click_fun(this,'W')">自动 W</div>
+            <div class="key_common_css close_key e" onclick="key_click_fun(this,'E')">自动 E</div>
+            <div class="key_common_css close_key r" onclick="key_click_fun(this,'R')">自动 R</div>
+            <p> 输入间隔：<input type="text" class="time time_input_css" onchange="time_change(this)"
+                            oninput="value=value.replace(/[^\d]/g,'')"/> ms</p>
+        </div>
+        <div class="log_div">
+            <div class="alert_text"></div>
+
+        </div>
+        <div class="text_div">
+            <textarea class="test_text"></textarea>
+        </div>
+    </div>
+    <div class="shutdown_div close_key" onclick="shutdown()">结束运行</div>
+    <div class="erweima_parent_div">
+        <div style="width: 100%;text-align: center;color: #787878">
+            <p>局域网内微信扫描控制</p>
+        </div>
+        <div class="erweima_class" id="erweima"></div>
+        <button class="reflash_token_button" onclick="retoken()">刷新令牌</button>
+    </div>
+
+</div>
+<input type="hidden" id="web_token" name="web_token" value="">
+</body>
+<script th:src="@{/script/jquery.js}"></script>
+<script th:src="@{/script/qrcode.min.js}"></script>
+<script th:inline="javascript" type="text/javascript">
+
+    var local_ip;
+    // window.onresize = function (ev) {
+    //     client_width = document.documentElement.clientWidth
+    //     if (client_width)
+    // }
+    var qrcode = new QRCode(document.getElementById("erweima"), {
+        width: 100,
+        height: 100
+    });
+
+    $(function () {
+
+        //扩展$.ajax
+        var yuan_ajax = $.ajax;
+        $.ajax = function (opt) {
+            token_temp = document.getElementById('web_token').value;
+            if (opt.data == undefined) {
+                opt.data = {'token': token_temp}
+            } else {
+                opt.data[token] = token_temp;
+            }
+            return yuan_ajax(opt);
+        }
+
+        try {
+            if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+                $("#model_client").css('display', 'block')
+                $("#window_client").css('display', 'none')
+            } else {
+                $("#model_client").css('display', 'none')
+                $("#window_client").css('display', 'block')
+            }
+        } catch (e) {
+        }
+
+        $.get(
+            '/getBaseMsg',
+            function (data) {
+                if (data.Q) {
+                    $(".q").removeClass("close_key").addClass("open_key");
+                }
+                if (data.W) {
+                    $(".w").removeClass("close_key").addClass("open_key");
+                }
+                if (data.E) {
+                    $(".e").removeClass("close_key").addClass("open_key");
+                }
+                if (data.R) {
+                    $(".r").removeClass("close_key").addClass("open_key");
+                }
+                $(".time").val(data.TIME);
+                document.getElementById('web_token').value = data.token;
+                local_ip = data.localIP;
+                createErweima()
+            }
+        )
+    })
+
+
+    function createErweima() {
+        if (null != local_ip && local_ip != '') {
+            web_token = $("#web_token").val();
+            $(".erweima_parent_div").css('display', 'block');
+            address = "http://" + local_ip + ":8888/?token=" + web_token;
+            qrcode.makeCode(address);
+        }
+    }
+
+    function key_click_fun(t, key) {
+        hasClass = $(t).hasClass("close_key")
+        if (hasClass) {
+            $.get(
+                '/updateKey/' + key + '/0',
+                function (data) {
+                    if (data == 'success') {
+                        $(t).removeClass("close_key").addClass("open_key");
+                    }
+                    add_alert("开启自动 " + key, 1)
+                }
+            )
+        } else {
+            $.get(
+                '/updateKey/' + key + '/1',
+                function (data) {
+                    if (data == 'success') {
+                        $(t).removeClass("open_key").addClass("close_key");
+                    }
+                    add_alert("关闭自动 " + key, 2)
+                }
+            )
+        }
+    }
+
+    function time_change(t) {
+        time = $(t).val()
+        $.get(
+            'updateSleep/' + time,
+            function (data) {
+                if (data == 'success') {
+                    add_alert("间隔已经设置为 " + time, 3)
+                }
+
+            }
+        )
+    }
+
+    function shutdown() {
+        $.get(
+            'shutDown',
+            function (data) {
+            }
+        )
+    }
+
+    var alert_count = 0;
+
+    function add_alert(str, type) {
+        alert_count++;
+        date = new Date();
+        h = date.getHours();
+        m = date.getMinutes();
+        s = date.getSeconds();
+        str = h + ':' + m + ':' + (s < 10 ? '0' + s : s) + ' | ' + str;
+        if (alert_count > 50) {
+            $("#alert_" + (alert_count - 50) + "").remove();
+        }
+        if (type == 1) {
+            $(".log_div").append("<span class='alert_type_1' id='alert_" + alert_count + "'>" + str + "</span>")
+        } else if (type == 2) {
+            $(".log_div").append("<span class='alert_type_2' id='alert_" + alert_count + "'>" + str + "</span>")
+        } else if (type == 3) {
+            $(".log_div").append("<span class='alert_type_3' id='alert_" + alert_count + "'>" + str + "</span>")
+        }
+        $(".log_div").scrollTop(350);
+    }
+
+    function retoken() {
+        $.get(
+            'retoken',
+            function (data) {
+                if (data != null && data != '') {
+                    $("#web_token").val(data);
+                    createErweima();
+                }
+            }
+        )
+    }
+
+</script>
+
+</body>
+</html>
