@@ -1,7 +1,5 @@
 package com.zy.keywebtool.util;
 
-import com.melloware.jintellitype.HotkeyListener;
-import com.melloware.jintellitype.JIntellitype;
 import com.zy.keywebtool.config.StatusConfigUtil;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
@@ -32,35 +30,34 @@ public class Util {
     }
 
     public static void registerHotKey() {
-        try {
-            JIntellitype.setLibraryLocation("C:\\JIntellitype.dll");
-            JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_CONTROL, (int) 'P');
-            StatusConfigUtil.GLOBAL = Boolean.TRUE;
-            //快捷键回调
-            listenerHomeKey();
-            System.out.println("全局监听启动(*^_^*)");
-        } catch (Exception e) {
-            System.out.println("全局监听启动失败o(╥﹏╥)o");
-            StatusConfigUtil.GLOBAL = Boolean.FALSE;
-        }
+//        try {
+//            JIntellitype.setLibraryLocation("C:\\JIntellitype.dll");
+//            JIntellitype.getInstance().registerHotKey(2, JIntellitype.MOD_CONTROL, (int) 'P');
+//            StatusConfigUtil.GLOBAL = Boolean.TRUE;
+//            //快捷键回调
+//            listenerHomeKey();
+//            System.out.println("全局监听启动(*^_^*)");
+//        } catch (Exception e) {
+//            System.out.println("全局监听启动失败o(╥﹏╥)o");
+//            StatusConfigUtil.GLOBAL = Boolean.FALSE;
+//        }
     }
 
-    private static void listenerHomeKey() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
-                    @Override
-                    public void onHotKey(int i) {
-                        if (i == 2) {
-                            openClient(0L,"adsasdadadadadadada");
-                        }
-                    }
-                });
-            }
-        }).start();
-
-    }
+//    private static void listenerHomeKey() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                JIntellitype.getInstance().addHotKeyListener(new HotkeyListener() {
+//                    @Override
+//                    public void onHotKey(int i) {
+//                        if (i == 2) {
+//                            openClient(0L,"adsasdadadadadadada");
+//                        }
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
 
     public static void openClient(final Long l, String type) {
         new Thread(new Runnable() {

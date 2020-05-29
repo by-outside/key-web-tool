@@ -1,8 +1,8 @@
 spring:
   application:
     name: key-web-tool
-  thymeleaf:
-    cache: false  #关闭缓存才能查看实时页面(开发)
-    mode: LEGACYHTML5
 server:
   port: 8888
+  tomcat:
+    max-threads: 3
+
