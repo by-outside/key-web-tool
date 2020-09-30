@@ -5,16 +5,12 @@ import com.zy.keywebtool.util.Util;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
-import sun.dc.pr.PRError;
 
 import javax.servlet.*;
-import javax.servlet.annotation.HandlesTypes;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Order(1)
 @WebFilter(urlPatterns = "/*")

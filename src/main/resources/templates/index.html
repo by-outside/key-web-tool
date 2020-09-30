@@ -3,7 +3,7 @@
       lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>造作啊 MD</title>
+    <title>脸滚键盘 MD 1.2</title>
     <style>
         .body_div {
             margin: 100px auto;
@@ -11,11 +11,11 @@
         }
 
         .key_div {
-            width: 29%;
+            width: 35%;
         }
 
         .text_div {
-            width: 39%
+            width: 25%
         }
 
         .body_div > div {
@@ -23,7 +23,7 @@
         }
 
         .key_common_css {
-            width: 130px;
+            width: 250px;
             height: 50px;
             text-align: center;
             line-height: 50px;
@@ -73,6 +73,7 @@
             border: none;
             font-size: 45pt;
             outline: none;
+            z-index: 9999;
         }
 
         .model_input_span {
@@ -156,27 +157,52 @@
 </head>
 <body>
 <div id="model_client">
-    <div class="key_model_common_css close_key q" onclick="key_click_fun(this,'Q')">自动 Q</div>
-    <div class="key_model_common_css close_key w" onclick="key_click_fun(this,'W')">自动 W</div>
-    <div class="key_model_common_css close_key e" onclick="key_click_fun(this,'E')">自动 E</div>
-    <div class="key_model_common_css close_key r" onclick="key_click_fun(this,'R')">自动 R</div>
-    <div class="key_model_common_css">
-        间隔：<span class="model_input_span">
-            <input type="text" class="time time_model_input_css"
-                   onchange="time_change(this)"
-                   oninput="value=value.replace(/[^\d]/g,'')"/></span> &nbsp;ms
+    <div class="key_model_common_css close_key q" onclick="key_click_fun(this,'Q')">
+        自动 Q
+        <input type="number" onclick="" class="time time_model_input_css time_q_input" onchange="time_change('Q',this)"
+               oninput="value=value.replace(/[^\d]/g,'')"/> ms
     </div>
-    <div class="key_model_common_css close_key" onclick="shutdown()">停止运行</div>
+    <div class="key_model_common_css close_key w" onclick="key_click_fun(this,'W')">
+        自动 W
+        <input type="number" onclick="" class="time time_model_input_css time_w_input" onchange="time_change('W',this)"
+               oninput="value=value.replace(/[^\d]/g,'')"/> ms
+    </div>
+    <div class="key_model_common_css close_key e" onclick="key_click_fun(this,'E')">
+        自动 E
+        <input type="number" onclick="" class="time time_model_input_css time_e_input" onchange="time_change('E',this)"
+               oninput="value=value.replace(/[^\d]/g,'')"/> ms
+    </div>
+    <div class="key_model_common_css close_key r" onclick="key_click_fun(this,'R')">
+        自动 R
+        <input type="number" onclick="" class="time time_model_input_css time_r_input" onchange="time_change('R',this)"
+               oninput="value=value.replace(/[^\d]/g,'')"/> ms
+    </div>
+    <div class="key_model_common_css close_key allStopDiv" onclick="allStop()">全部暂停</div>
+    <div class="key_model_common_css close_key" onclick="shutdown()">关闭程序</div>
 </div>
 <div id="window_client">
     <div class="body_div">
         <div class="key_div">
-            <div class="key_common_css close_key q" onclick="key_click_fun(this,'Q')">自动 Q</div>
-            <div class="key_common_css close_key w" onclick="key_click_fun(this,'W')">自动 W</div>
-            <div class="key_common_css close_key e" onclick="key_click_fun(this,'E')">自动 E</div>
-            <div class="key_common_css close_key r" onclick="key_click_fun(this,'R')">自动 R</div>
-            <p> 输入间隔：<input type="text" class="time time_input_css" onchange="time_change(this)"
-                            oninput="value=value.replace(/[^\d]/g,'')"/> ms</p>
+            <div class="key_common_css close_key q" onclick="key_click_fun(this,'Q')">
+                自动 Q
+                <input type="number" class="time time_input_css time_q_input" onchange="time_change('Q',this)"
+                       oninput="value=value.replace(/[^\d]/g,'')"/> ms
+            </div>
+            <div class="key_common_css close_key w" onclick="key_click_fun(this,'W')">
+                自动 W
+                <input type="text" class="time time_input_css time_w_input" onchange="time_change('W',this)"
+                       oninput="value=value.replace(/[^\d]/g,'')"/> ms
+            </div>
+            <div class="key_common_css close_key e" onclick="key_click_fun(this,'E')">
+                自动 E
+                <input type="text" class="time time_input_css time_e_input" onchange="time_change('E',this)"
+                       oninput="value=value.replace(/[^\d]/g,'')"/> ms
+            </div>
+            <div class="key_common_css close_key r" onclick="key_click_fun(this,'R')">
+                自动 R
+                <input type="text" class="time time_input_css time_r_input" onchange="time_change('R',this)"
+                       oninput="value=value.replace(/[^\d]/g,'')"/> ms
+            </div>
         </div>
         <div class="log_div">
             <div class="alert_text"></div>
@@ -186,7 +212,8 @@
             <textarea class="test_text"></textarea>
         </div>
     </div>
-    <div class="shutdown_div close_key" onclick="shutdown()">结束运行</div>
+    <div class="shutdown_div close_key allStopDiv" onclick="allStop()">全部暂停</div>
+    <div class="shutdown_div close_key" onclick="shutdown()">关闭程序</div>
     <div class="erweima_parent_div">
         <div style="width: 100%;text-align: center;color: #787878">
             <p>局域网内微信扫描控制</p>
@@ -214,6 +241,13 @@
 
     $(function () {
 
+        //阻止input框冒泡
+        var $time = $(".time");
+        for (var i = 0; i < $time.length; i++) {
+            $($time[i]).click(function (event) {
+                return false;
+            })
+        }
         //扩展$.ajax
         var yuan_ajax = $.ajax;
         $.ajax = function (opt) {
@@ -252,7 +286,15 @@
                 if (data.R) {
                     $(".r").removeClass("close_key").addClass("open_key");
                 }
-                $(".time").val(data.TIME);
+                $(".time_q_input").val(data.Q_INTERVAL);
+                $(".time_w_input").val(data.W_INTERVAL);
+                $(".time_e_input").val(data.E_INTERVAL);
+                $(".time_r_input").val(data.R_INTERVAL);
+                if(data.allStop){
+                    $(".allStopDiv").removeClass("close_key").addClass("open_key");
+                }else {
+                    $(".allStopDiv").removeClass("open_key").addClass("close_key");
+                }
                 document.getElementById('web_token').value = data.token;
                 local_ip = data.localIP;
                 createErweima()
@@ -261,6 +303,7 @@
     })
 
 
+    //局域网二维码
     function createErweima() {
         if (null != local_ip && local_ip != '') {
             web_token = $("#web_token").val();
@@ -270,35 +313,27 @@
         }
     }
 
+    //
     function key_click_fun(t, key) {
-        hasClass = $(t).hasClass("close_key")
-        if (hasClass) {
-            $.get(
-                '/updateKey/' + key + '/0',
-                function (data) {
-                    if (data == 'success') {
-                        $(t).removeClass("close_key").addClass("open_key");
-                    }
+        $.get(
+            '/updateKey/' + key,
+            function (data) {
+                hasClass = $(t).hasClass("close_key")
+                if (data == 'success' && hasClass) {
+                    $(t).removeClass("close_key").addClass("open_key");
                     add_alert("开启自动 " + key, 1)
-                }
-            )
-        } else {
-            $.get(
-                '/updateKey/' + key + '/1',
-                function (data) {
-                    if (data == 'success') {
-                        $(t).removeClass("open_key").addClass("close_key");
-                    }
+                } else {
+                    $(t).removeClass("open_key").addClass("close_key");
                     add_alert("关闭自动 " + key, 2)
                 }
-            )
-        }
+            }
+        )
     }
 
-    function time_change(t) {
-        time = $(t).val()
+    function time_change(key, t) {
+        time = $(t).val();
         $.get(
-            'updateSleep/' + time,
+            'updateSleep/' + key + '/' + time,
             function (data) {
                 if (data == 'success') {
                     add_alert("间隔已经设置为 " + time, 3)
@@ -312,6 +347,20 @@
         $.get(
             'shutDown',
             function (data) {
+            }
+        )
+    }
+
+    function allStop() {
+        $.get(
+            'allStop',
+            function (data) {
+                hasClass = $(".allStopDiv").hasClass("close_key");
+                if (hasClass) {
+                    $(".allStopDiv").removeClass("close_key").addClass("open_key");
+                } else {
+                    $(".allStopDiv").removeClass("open_key").addClass("close_key");
+                }
             }
         )
     }
